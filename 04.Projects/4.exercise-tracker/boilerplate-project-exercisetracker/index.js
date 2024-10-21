@@ -55,8 +55,6 @@ app.post('/api/users', async (req, res) => {
   try {
     const user = new User({ username: req.body.username });
     const savedUser = await user.save();
-
-    // response
     res.json(savedUser);
   } catch (err) {
     console.error(err);
@@ -80,9 +78,7 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
         duration,
         date: date ? new Date(date) : new Date(),
       });
-
       const exercise = await exerciseObj.save();
-
       // response
       res.json({
         _id: user._id,
@@ -105,22 +101,26 @@ app.get("/api/users/:_id/logs", async (req, res) => {
     const id = req.params._id;
     const user = await User.findById(id);
 
-    let dateObj = {};
-    if(from){
-      dateObj["gte"] = new Date(from);
-    }
-    if(to){
-      dateObj["lte"] = new Date(to);
+    let dateFilter = {};
+    if (from && to) {
+      dateFilter = {
+        $gte: new Date(from),
+        $lte: new Date(to)
+      };
+    } else if (from) {
+      dateFilter = { $gte: new Date(from) };
+    } else if (to) {
+      dateFilter = { $lte: new Date(to) };
     }
 
     let filter = {
       user_id: id
     }
-    if(from || to){
-      filter.date = dateObj;
+    if(Object.keys(dateFilter).length > 0){
+      filter.date = dateFilter;
     }
 
-    const exercise = await Exercise.find(filter).limit(+limit ?? 500);
+    const exercise = await Exercise.find(filter).limit(+limit || 500);
     
     const log = exercise.map( e => ({
       description: e.description,
@@ -138,10 +138,10 @@ app.get("/api/users/:_id/logs", async (req, res) => {
 
   }catch(err){
     console.error(err);
-    res.send("Could not find user");
-    return;
+    res.status(404).send("Could not find user");
   }
 })
+
 
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log('Your app is listening on port ' + listener.address().port)
