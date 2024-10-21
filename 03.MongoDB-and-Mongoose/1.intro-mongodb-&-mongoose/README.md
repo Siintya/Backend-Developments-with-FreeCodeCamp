@@ -14,7 +14,9 @@ systems instead of only one. This makes it easier to improve performance at a lo
 2. Create a Free Shared Cluster and name your cluster **freecodecamp**.
 3. Go to **Database Access**, click **ADD NEW DATABASE USER**. Create a new user with a password (make sure to copy and store this somewhere) and grant the user **Read and write to any database privileges**. Click the **Add User** button.
 4. Go to **Database**, click **Browse Collections**, and then click **Create Database**. Enter a database name and collection name, then click **Create**.
-5. Go to **Network Access**, click **Add IP Address**, and select **Allow Access from Anywhere**.
+5. Go to **Network Access**, click **Add IP Address**:
+   - select **Allow Access from Anywhere**
+   - add **Access List Entry**: **0.0.0.0/0**
 6. To connect to MongoDB, go to **Database**. <br> <br>
    ![Alt text](image.png)
     <br> <br>
